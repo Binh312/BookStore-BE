@@ -1,10 +1,12 @@
 package com.bookstore.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -26,7 +28,8 @@ public class Book {
 
     private Long quantity;
 
-    private Date createdDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate createdDate;
 
     private Integer price;
 
