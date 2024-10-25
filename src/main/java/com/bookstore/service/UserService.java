@@ -11,6 +11,8 @@ import com.bookstore.respository.UserRepository;
 import com.bookstore.utils.Contains;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,51 +58,6 @@ public class UserService {
         return tokenDto;
     }
 
-    public User regis(User user){
-        userRepository.findByEmail(user.getEmail())
-                .ifPresent(exist->{
-                    throw new GlobalException("Tên đăng nhập đã tồn tại", 400);
-                });
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreatedDate(LocalDate.now());
-        user.setActived(false);
-        user.setRole("ROLE_USER");
-        user.setPhoneNumber(user.getPhoneNumber());
-        user.setActivationKey(randomKey());
-        User result = userRepository.save(user);
-        mailService.sendEmail(user.getEmail(),"Xác thực tài khoản",
-                "Nhập mã xác nhận bên dưới để kích hoạt tài khoản<br>Mã xác nhận của bạn là: "+user.getActivationKey(),
-                false, true);
-        return result;
-    }
-
-    public void confirmAccount(String activationKey, String email){
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()){
-            throw new GlobalException("Email không tồn tại!");
-        }
-        if (user.get().getActivationKey() == null){
-            throw new GlobalException("Mã xác thực không đúng");
-        }
-        if (!user.get().getActivationKey().equals(activationKey)){
-            throw new GlobalException("Mã xác thực không trùng khớp");
-        } else {
-            user.get().setActived(true);
-            user.get().setActivationKey(null);
-            userRepository.save(user.get());
-            System.out.println("Xác nhận thành công");
-        }
-
-    }
-
-    public User findInfoUser(Long id){
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()){
-            throw new GlobalException("User không tồn tại");
-        }
-        return user.get();
-    }
-
     public TokenDto loginWithGoogle(GoogleIdToken.Payload payload) {
         User user = new User();
         user.setEmail(payload.getEmail());
@@ -135,6 +92,50 @@ public class UserService {
         }
     }
 
+    public User regis(User user){
+        userRepository.findByEmail(user.getEmail())
+                .ifPresent(exist->{
+                    throw new GlobalException("Tên đăng nhập đã tồn tại", 400);
+                });
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedDate(LocalDate.now());
+        user.setActived(false);
+        user.setRole("ROLE_USER");
+        user.setPhoneNumber(user.getPhoneNumber());
+        user.setActivationKey(randomKey());
+        User result = userRepository.save(user);
+        mailService.sendEmail(user.getEmail(),"Xác thực tài khoản",
+                "Nhập mã xác nhận bên dưới để kích hoạt tài khoản<br>Mã xác nhận của bạn là: "+user.getActivationKey(),
+                false, true);
+        return result;
+    }
+
+    public String confirmAccount(String activationKey, String email){
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()){
+            throw new GlobalException("Email không tồn tại!");
+        }
+        if (user.get().getActivationKey() == null){
+            throw new GlobalException("Mã xác thực không đúng");
+        }
+        if (!user.get().getActivationKey().equals(activationKey)){
+            throw new GlobalException("Mã xác thực không trùng khớp");
+        } else {
+            user.get().setActived(true);
+            user.get().setActivationKey(null);
+            userRepository.save(user.get());
+            return "Xác nhận tài khoản thành công";
+        }
+    }
+
+    public User findInfoUser(Long id){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()){
+            throw new GlobalException("User không tồn tại");
+        }
+        return user.get();
+    }
+
     public String randomKey(){
         String str = "12345667890";
         Integer length = str.length()-1;
@@ -145,4 +146,28 @@ public class UserService {
         }
         return String.valueOf(stringBuilder);
     }
+
+    public Page<User> getAllUser(Pageable pageable, String role){
+        if (role == null){
+            return userRepository.getAllUser(pageable);
+        }
+        return userRepository.getAllUserByRole(pageable,role);
+    }
+
+    public String lockOrUnlock(Long id){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()){
+            throw new GlobalException("Người dùng không tồn tại");
+        }
+        if (user.get().getActived() == true){
+            user.get().setActived(false);
+            userRepository.save(user.get());
+            return "Đã khóa tài khoản";
+        } else {
+            user.get().setActived(true);
+            userRepository.save(user.get());
+            return "Đã mở khóa tài khoản";
+        }
+    }
+
 }

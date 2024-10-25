@@ -36,9 +36,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
 
-    /*
-    *  lấy jwt từ header khi người dùng gửi yêu cầu
-    * */
+
+//  lấy jwt từ header khi người dùng gửi yêu cầu
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         // Kiểm tra xem header Authorization có chứa thông tin jwt không
@@ -75,8 +75,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     public Authentication getAuthentication(String token, Long userId) {
         User u = userRepository.findById(userId).get();
-
-//        String authol = u.getRole().getName();
         String authol = u.getRole();
         System.out.println("role: "+authol);
         Collection<? extends GrantedAuthority> authorities = Arrays

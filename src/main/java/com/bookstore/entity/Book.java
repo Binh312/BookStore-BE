@@ -2,12 +2,15 @@ package com.bookstore.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,7 +31,9 @@ public class Book {
 
     private Long quantity;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    private Long sold;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createdDate;
 
     private Integer price;
@@ -45,5 +50,22 @@ public class Book {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<BookImage> bookImages;
 
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<BookCategory> bookCategories;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private List<BookAuthor> bookAuthors;
+
+    @Transient
+    private List<String> listLink = new ArrayList<>();
+
+    @Transient
+    private List<Long> listCategoryId = new ArrayList<>();
 }

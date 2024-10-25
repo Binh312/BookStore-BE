@@ -8,6 +8,8 @@ import com.bookstore.service.GoogleOAuth2Service;
 import com.bookstore.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,15 +48,31 @@ public class UserApi {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirmAccount(@RequestParam String key,
+    public ResponseEntity<?> confirmAccount(@RequestParam(value = "key") String activationKey,
                                             @RequestParam String email){
-        userService.confirmAccount(key, email);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        String str = userService.confirmAccount(activationKey, email);
+        return new ResponseEntity<>(str, HttpStatus.CREATED);
     }
 
     @GetMapping("/find-user")
     public ResponseEntity<?> findInfoUser(@RequestParam Long id){
         User result = userService.findInfoUser(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/check-role-admin")
+    public void checkRoleAdmin(){
+    }
+
+    @GetMapping("/admin/get-all-user")
+    public ResponseEntity<?> getAllUser(@RequestParam(required = false) String role, Pageable pageable){
+        Page<User> page = userService.getAllUser(pageable,role);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @PostMapping("/admin/lock-or-unlock")
+    public ResponseEntity<?> lockOrUnlock(@RequestParam Long id){
+        String str = userService.lockOrUnlock(id);
+        return new ResponseEntity<>(str, HttpStatus.OK);
     }
 }

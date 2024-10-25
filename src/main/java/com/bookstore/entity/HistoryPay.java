@@ -1,11 +1,13 @@
 package com.bookstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "history_pay")
@@ -20,9 +22,11 @@ public class HistoryPay {
 
     private Double totalAmount;
 
-    private Date createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDateTime createdDate;
 
-    private Time createdTime;
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalDateTime createdTime;
 
     private String requestId;
 

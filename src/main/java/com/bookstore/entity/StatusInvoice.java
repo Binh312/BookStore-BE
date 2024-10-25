@@ -1,6 +1,7 @@
 package com.bookstore.entity;
 
 import com.bookstore.enums.InvoiceStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class StatusInvoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime createdDate;
 
     private InvoiceStatus invoiceStatus;
@@ -28,5 +30,5 @@ public class StatusInvoice {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User createdBy;
+    private User user;
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -19,16 +20,13 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date createDate;
-
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date endDate;
-
     private String title;
 
-    private Double price;
+    private Integer price;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDateTime createDate;
 
-
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDateTime endDate;
 }

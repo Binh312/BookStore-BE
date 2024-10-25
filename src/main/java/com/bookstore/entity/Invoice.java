@@ -2,6 +2,7 @@ package com.bookstore.entity;
 
 import com.bookstore.enums.InvoiceStatus;
 import com.bookstore.enums.PayType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime createDate;
 
     private Integer totalAmount;

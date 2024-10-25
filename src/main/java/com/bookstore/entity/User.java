@@ -28,7 +28,7 @@ public class User {
 
     private String avatar;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createdDate;
 
     private String phoneNumber;
