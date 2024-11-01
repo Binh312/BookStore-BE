@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/author")
 @CrossOrigin("*")
@@ -39,5 +41,11 @@ public class AuthorApi {
     public ResponseEntity<?> getAllAuthor(Pageable pageable){
         Page<Author> page = authorService.getAllAuthor(pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-list-author")
+    public ResponseEntity<?> getListAuthor(){
+        List<Author> list = authorService.getListAuthor();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

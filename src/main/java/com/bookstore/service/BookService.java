@@ -127,6 +127,11 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public Page<Book> searchBookByTitle(String title, Pageable pageable){
+        Page<Book> page = bookRepository.searchBooksByTitle(title,pageable);
+        return page;
+    }
+
     public Page<Book> findProductsByCriteria(List<Long> categoryIds, List<Long> authorIds, Integer minPrice, Integer maxPrice, Pageable pageable) {
         BookSpecification spec = new BookSpecification(categoryIds, authorIds, minPrice, maxPrice);
         return bookRepository.findAll(spec, pageable);

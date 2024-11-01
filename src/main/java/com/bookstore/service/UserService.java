@@ -128,6 +128,46 @@ public class UserService {
         }
     }
 
+    public User updateInfo(User user){
+        Optional<User> userOptional = userRepository.findById(user.getId());
+        if (userOptional.isEmpty()){
+            throw new GlobalException("Tài khoản không tồn tại");
+        }
+
+        if (!user.getEmail().equals(userOptional.get().getEmail())){
+            user.setEmail(user.getEmail());
+        } else {
+            user.setEmail(userOptional.get().getEmail());
+        }
+
+        if(!passwordEncoder.matches(user.getPassword(), userOptional.get().getPassword())){
+            if (user.getPassword().length() < 5){
+                if (passwordEncoder.matches(user.getPassword(), userOptional.get().getPassword()) || user.getPassword().isEmpty()) {
+                    user.setPassword(userOptional.get().getPassword());
+                } else {
+                    throw new GlobalException("Mật khẩu không được ít hơn 5 ký tự");
+                }
+            } else if (user.getPassword().contains(" ")) {
+                throw new GlobalException("Mật khẩu không được để ký tự space");
+            } else {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+        }
+
+        if (!user.getAvatar().equals(userOptional.get().getAvatar())){
+            user.setAvatar(user.getAvatar());
+        } if (user.getAvatar().isEmpty() || user.getAvatar() == null) {
+            user.setAvatar(userOptional.get().getAvatar());
+        }
+
+        user.setFullName(userOptional.get().getFullName());
+        user.setPhoneNumber(userOptional.get().getPhoneNumber());
+        user.setRole(userOptional.get().getRole());
+        user.setActived(userOptional.get().getActived());
+
+        return user;
+    }
+
     public User findInfoUser(Long id){
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()){

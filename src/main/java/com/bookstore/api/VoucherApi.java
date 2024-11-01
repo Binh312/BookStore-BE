@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/voucher")
 @CrossOrigin("*")
@@ -39,5 +41,11 @@ public class VoucherApi {
     public ResponseEntity<?> getAllVoucher(Pageable pageable){
         Page<Voucher> page = voucherService.getAllVoucher(pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-list-voucher")
+    public ResponseEntity<?> getListVoucher(){
+        List<Voucher> list = voucherService.getListVoucher();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

@@ -21,6 +21,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     @Query("select b from Book b")
     Page<Book> getAllBook(Pageable pageable);
 
+    @Query("select b from Book b where b.title like %?1%")
+    Page<Book> searchBooksByTitle(String title, Pageable pageable);
+
     @Override
     List<Book> findAll();
 }

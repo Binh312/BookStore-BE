@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,5 +72,15 @@ public class InvoiceService {
 
     public Page<Invoice> getAllInvoice(Pageable pageable){
         return invoiceRepository.getAllInvoice(pageable);
+    }
+
+    public List<InvoiceStatus> getInvoiceStatus(){
+        List<InvoiceStatus> list = Arrays.asList(InvoiceStatus.values());
+        return list;
+    }
+
+    public List<PayType> getPayType(){
+        List<PayType> list = Arrays.asList(PayType.values());
+        return list;
     }
 }

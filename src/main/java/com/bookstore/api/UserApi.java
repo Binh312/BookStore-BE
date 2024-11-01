@@ -54,6 +54,12 @@ public class UserApi {
         return new ResponseEntity<>(str, HttpStatus.CREATED);
     }
 
+    @PostMapping("/update-info")
+    public ResponseEntity<?> updateInfo(@RequestBody User user){
+        User result = userService.updateInfo(user);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @GetMapping("/find-user")
     public ResponseEntity<?> findInfoUser(@RequestParam Long id){
         User result = userService.findInfoUser(id);

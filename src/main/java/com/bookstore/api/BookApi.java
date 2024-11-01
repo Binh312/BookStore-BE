@@ -1,6 +1,6 @@
 package com.bookstore.api;
 
-import com.bookstore.dto.request.BookSearch;
+import com.bookstore.dto.request.BookFilter;
 import com.bookstore.entity.Book;
 import com.bookstore.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +50,15 @@ public class BookApi {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping("/search-full")
-    public ResponseEntity<?> searchFull(@RequestBody BookSearch s, Pageable pageable){
-        Page<Book> list = bookService.findProductsByCriteria(s.getCategoryIds(), s.getAuthorIds(), s.getMinPrice(), s.getMaxPrice(), pageable);
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    @GetMapping("/search-book")
+    public ResponseEntity<?> searchBook(@RequestParam String title, Pageable pageable){
+        Page<Book> page = bookService.searchBookByTitle(title,pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @PostMapping("/filter-full")
+    public ResponseEntity<?> filterFull(@RequestBody BookFilter s, Pageable pageable){
+        Page<Book> page = bookService.findProductsByCriteria(s.getCategoryIds(), s.getAuthorIds(), s.getMinPrice(), s.getMaxPrice(), pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 }

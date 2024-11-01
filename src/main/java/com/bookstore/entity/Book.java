@@ -54,13 +54,12 @@ public class Book {
     @JsonManagedReference
     private List<BookImage> bookImages;
 
-
     @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<BookCategory> bookCategories;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
-    @JsonBackReference
+    @JsonManagedReference
     private List<BookAuthor> bookAuthors;
 
     @Transient
@@ -68,4 +67,7 @@ public class Book {
 
     @Transient
     private List<Long> listCategoryId = new ArrayList<>();
+
+    @Transient
+    private List<Long> listAuthorId = new ArrayList<>();
 }

@@ -1,6 +1,8 @@
 package com.bookstore.api;
 
 import com.bookstore.entity.Invoice;
+import com.bookstore.enums.InvoiceStatus;
+import com.bookstore.enums.PayType;
 import com.bookstore.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoice")
@@ -39,5 +43,17 @@ public class InvoiceApi {
     public ResponseEntity<?> getAllInvoice(Pageable pageable){
         Page<Invoice> page = invoiceService.getAllInvoice(pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-invoice-status")
+    public ResponseEntity<?> getInvoiceStatus(){
+        List<InvoiceStatus> list = invoiceService.getInvoiceStatus();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-pay-type")
+    public ResponseEntity<?> getPayType(){
+        List<PayType> list = invoiceService.getPayType();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

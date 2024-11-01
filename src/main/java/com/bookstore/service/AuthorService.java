@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +59,9 @@ public class AuthorService {
 
     public Page<Author> getAllAuthor(Pageable pageable){
         return authorRepository.getAllAuthor(pageable);
+    }
+
+    public List<Author> getListAuthor(){
+        return authorRepository.getListAuthor();
     }
 }
