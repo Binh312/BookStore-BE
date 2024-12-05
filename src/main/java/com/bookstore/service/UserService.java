@@ -176,6 +176,10 @@ public class UserService {
         return user.get();
     }
 
+    public Page<User> searchUser(String name, Pageable pageable){
+        return userRepository.searchUser(name,pageable);
+    }
+
     public String randomKey(){
         String str = "12345667890";
         Integer length = str.length()-1;

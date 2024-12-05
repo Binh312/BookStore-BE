@@ -4,6 +4,8 @@ import com.bookstore.entity.Publisher;
 import com.bookstore.exception.GlobalException;
 import com.bookstore.respository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,6 +55,14 @@ public class PublisherService {
             throw new GlobalException("Nhà phát hành không tồn tại");
         }
         return publisher.get();
+    }
+
+    public Page<Publisher> searchPublisher(String name, Pageable pageable){
+        return publisherRepository.searchPublisher(name,pageable);
+    }
+
+    public Page<Publisher> getAllPublisher(Pageable pageable){
+        return publisherRepository.getAllPublisher(pageable);
     }
 
     public List<Publisher> getListPublisher(){

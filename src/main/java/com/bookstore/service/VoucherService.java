@@ -62,6 +62,10 @@ public class VoucherService {
         return voucherOptional.get();
     }
 
+    public Page<Voucher> searchVoucher(String title, Pageable pageable){
+        return voucherRepository.searchVoucher(title,pageable);
+    }
+
     public Page<Voucher> getAllVoucher(Pageable pageable){
         return voucherRepository.getAllVoucher(pageable);
     }

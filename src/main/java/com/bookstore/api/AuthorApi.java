@@ -37,6 +37,12 @@ public class AuthorApi {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/search-author")
+    public ResponseEntity<?> searchAuthor(@RequestParam String name, Pageable pageable){
+        Page<Author> page = authorService.searchAuthor(name,pageable);
+        return new ResponseEntity<>(page,HttpStatus.OK);
+    }
+
     @GetMapping("/get-all-author")
     public ResponseEntity<?> getAllAuthor(Pageable pageable){
         Page<Author> page = authorService.getAllAuthor(pageable);

@@ -61,4 +61,16 @@ public class BookApi {
         Page<Book> page = bookService.findProductsByCriteria(s.getCategoryIds(), s.getAuthorIds(), s.getMinPrice(), s.getMaxPrice(), pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
+    @PostMapping("/decrease-amount")
+    public ResponseEntity<?> decreaseAmount(@RequestParam Long bookId){
+        Integer result = bookService.decreaseAmount(bookId);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @PostMapping("/increase-amount")
+    public ResponseEntity<?> increaseAmount(@RequestParam Long bookId){
+        Integer result = bookService.increaseAmount(bookId);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
 }

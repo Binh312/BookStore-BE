@@ -34,7 +34,7 @@ public class AuthorService {
         if (authorOptional.isEmpty()){
             throw new GlobalException("Tác giả không tồn tại");
         }
-        if (authorOptional.get().getFullName().equals(author.getFullName())){
+        if (authorRepository.existsByFullName(author.getFullName())){
             throw new GlobalException("Tên tác giả đã tồn tại");
         }
         return authorRepository.save(author);
@@ -55,6 +55,10 @@ public class AuthorService {
             throw new GlobalException("Tác giả không tồn tại");
         }
         return authorOptional.get();
+    }
+
+    public Page<Author> searchAuthor(String name, Pageable pageable){
+        return authorRepository.searchAuthor(name,pageable);
     }
 
     public Page<Author> getAllAuthor(Pageable pageable){

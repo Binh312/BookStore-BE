@@ -16,6 +16,11 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query("select a from Author a where a.fullName = ?1")
     Optional<Author> findAuthorByFullName(String name);
 
+    boolean existsByFullName(String fullName);
+
+    @Query("select a from Author a where a.fullName like %?1%")
+    Page<Author> searchAuthor(String name, Pageable pageable);
+
     @Query("select a from Author a")
     Page<Author> getAllAuthor(Pageable pageable);
 

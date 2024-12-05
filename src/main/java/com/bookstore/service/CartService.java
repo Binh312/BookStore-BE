@@ -10,6 +10,7 @@ import com.bookstore.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,40 +25,29 @@ public class CartService {
     @Autowired
     private BookRepository bookRepository;
 
-    public Cart createCart(Cart cart){
-        if (cart.getId() == null){
-            Optional<User> user = userRepository.findById(cart.getUser().getId());
-            if (user.isEmpty()){
-                throw new GlobalException("Người dùng không tồn tại");
-            }
-            Optional<Book> book = bookRepository.findById(cart.getBook().getId());
-            if (book.isEmpty()){
-                throw new GlobalException("Sách không tồn tại");
-            }
-            cart.setUser(user.get());
-            cart.setBook(book.get());
-            return cartRepository.save(cart);
-        } else {
-            return updateCart(cart);
-        }
-    }
-
-    public Cart updateCart(Cart cart){
-        Optional<Cart> cartOptional = cartRepository.findById(cart.getId());
-        if (cartOptional.isEmpty()){
-            throw new GlobalException("Giỏ hàng không tồn tại");
-        }
-        Optional<User> user = userRepository.findById(cart.getUser().getId());
+    public Cart createCart(Long userId, Long bookId, Integer quantity){
+        Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()){
-            throw new GlobalException("Người dùng không tồn tại");
+            throw new GlobalException("Người dùng không tồn tại!");
         }
-        Optional<Book> book = bookRepository.findById(cart.getBook().getId());
+        Optional<Book> book = bookRepository.findById(bookId);
         if (book.isEmpty()){
-            throw new GlobalException("Sách không tồn tại");
+            throw new GlobalException("Sách không tồn tại!");
         }
-        cart.setUser(user.get());
-        cart.setBook(book.get());
-        return cartRepository.save(cart);
+
+        Optional<Cart> cartOptional = cartRepository.getCartByUserAndBook(userId,bookId);
+        if (cartOptional.isPresent()){
+            cartOptional.get().setQuantity(cartOptional.get().getQuantity() + quantity);
+            cartOptional.get().setTotalPrice(cartOptional.get().getQuantity() * book.get().getPrice());
+            return cartRepository.save(cartOptional.get());
+        } else {
+            Cart newCart = new Cart();
+            newCart.setUser(user.get());
+            newCart.setBook(book.get());
+            newCart.setQuantity(quantity);
+            newCart.setTotalPrice(newCart.getQuantity() * book.get().getPrice());
+            return cartRepository.save(newCart);
+        }
     }
 
     public String deleteCart(Long id){
@@ -76,4 +66,27 @@ public class CartService {
         }
         return cartOptional.get();
     }
+
+    public List<Cart> getListCart(Long userId){
+        return cartRepository.getCartsByUserId(userId);
+    }
+
+    public Integer decreaseQuantity(Long bookId){
+        Optional<Cart> cart = cartRepository.getCartByBookId(bookId);
+        if (cart.get().getQuantity() > 1) {
+            cart.get().setQuantity(cart.get().getQuantity() - 1);
+        }
+        cartRepository.save(cart.get());
+        return cart.get().getQuantity();
+    }
+
+    public Integer increaseQuantity(Long bookId){
+        Optional<Cart> cart = cartRepository.getCartByBookId(bookId);
+        if (cart.get().getQuantity() < cart.get().getBook().getQuantity()) {
+            cart.get().setQuantity(cart.get().getQuantity() + 1);
+        }
+        cartRepository.save(cart.get());
+        return cart.get().getQuantity();
+    }
+
 }

@@ -37,6 +37,12 @@ public class VoucherApi {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/search-voucher")
+    public ResponseEntity<?> searchVoucher(@RequestParam String title, Pageable pageable){
+        Page<Voucher> page = voucherService.searchVoucher(title,pageable);
+        return new ResponseEntity<>(page,HttpStatus.OK);
+    }
+
     @GetMapping("/get-all-voucher")
     public ResponseEntity<?> getAllVoucher(Pageable pageable){
         Page<Voucher> page = voucherService.getAllVoucher(pageable);

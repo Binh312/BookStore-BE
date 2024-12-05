@@ -1,5 +1,6 @@
 package com.bookstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class BookAuthor {
 
     @ManyToOne
     @JoinColumn(name = "book_id")
+    @JsonBackReference
     private Book book;
 
     @ManyToOne

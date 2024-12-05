@@ -34,10 +34,11 @@ public class CategoryService {
         if (categoryOptional.isEmpty()){
             throw new GlobalException("Danh mục này không tồn tại");
         }
-        if (categoryOptional.get().getName().equals(category.getName())){
+        if (categoryRepository.existsByName(category.getName())){
             throw new GlobalException("Tên danh mục này đã tồn tại");
         }
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
+        return category;
     }
 
     public String deleteCategory(Long id){
@@ -55,6 +56,10 @@ public class CategoryService {
             throw new GlobalException("Danh mục này không tồn tại");
         }
         return categoryOptional.get();
+    }
+
+    public Page<Category> searchCategory(String name, Pageable pageable){
+        return categoryRepository.searchCategory(name,pageable);
     }
 
     public Page<Category> getAllCategory(Pageable pageable){

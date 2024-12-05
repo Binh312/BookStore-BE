@@ -29,9 +29,11 @@ public class Book {
 
     private String description;
 
+    private Integer amount;
+
     private Long quantity;
 
-    private Long sold;
+    private Long sold = 0L;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createdDate;

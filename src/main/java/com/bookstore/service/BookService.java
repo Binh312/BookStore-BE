@@ -3,10 +3,7 @@ package com.bookstore.service;
 import com.bookstore.dto.response.BookSpecification;
 import com.bookstore.entity.*;
 import com.bookstore.exception.GlobalException;
-import com.bookstore.respository.BookCategoryRepository;
-import com.bookstore.respository.BookImageRepository;
-import com.bookstore.respository.BookRepository;
-import com.bookstore.respository.PublisherRepository;
+import com.bookstore.respository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +25,11 @@ public class BookService {
     @Autowired
     private BookImageRepository bookImageRepository;
 
-
     @Autowired
     private BookCategoryRepository bookCategoryRepository;
+
+    @Autowired
+    private BookAuthorRepository bookAuthorRepository;
 
     public Book createBook(Book book){
         if(book.getId() == null){
@@ -44,6 +43,7 @@ public class BookService {
             }
             book.setPublisher(publisherOptional.get());
             book.setCreatedDate(LocalDate.now());
+            book.setAmount(1);
             bookRepository.save(book);
             for(String s : book.getListLink()){
                 BookImage bookImage = new BookImage();
@@ -59,6 +59,15 @@ public class BookService {
                 c.setId(id);
                 bookCategory.setCategory(c);
                 bookCategoryRepository.save(bookCategory);
+            }
+
+            for(Long id : book.getListAuthorId()){
+                BookAuthor bookAuthor = new BookAuthor();
+                bookAuthor.setBook(book);
+                Author a = new Author();
+                a.setId(id);
+                bookAuthor.setAuthor(a);
+                bookAuthorRepository.save(bookAuthor);
             }
             return book;
         }
@@ -99,6 +108,16 @@ public class BookService {
             bookCategory.setCategory(c);
             bookCategoryRepository.save(bookCategory);
         }
+
+        bookAuthorRepository.deleteBookAuthorByProduct(book.getId());
+        for(Long id : book.getListAuthorId()){
+            BookAuthor bookAuthor = new BookAuthor();
+            bookAuthor.setBook(book);
+            Author a = new Author();
+            a.setId(id);
+            bookAuthor.setAuthor(a);
+            bookAuthorRepository.save(bookAuthor);
+        }
         return book;
     }
 
@@ -116,6 +135,8 @@ public class BookService {
         if (bookOptional.isEmpty()){
             throw new GlobalException("Sách không tồn tại");
         }
+        bookOptional.get().setAmount(1);
+        bookRepository.save(bookOptional.get());
         return bookOptional.get();
     }
 
@@ -135,5 +156,23 @@ public class BookService {
     public Page<Book> findProductsByCriteria(List<Long> categoryIds, List<Long> authorIds, Integer minPrice, Integer maxPrice, Pageable pageable) {
         BookSpecification spec = new BookSpecification(categoryIds, authorIds, minPrice, maxPrice);
         return bookRepository.findAll(spec, pageable);
+    }
+
+    public Integer decreaseAmount(Long bookId){
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book.get().getAmount() > 1) {
+            book.get().setAmount(book.get().getAmount() - 1);
+        }
+        bookRepository.save(book.get());
+        return book.get().getAmount();
+    }
+
+    public Integer increaseAmount(Long bookId){
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book.get().getAmount() < book.get().getQuantity()) {
+            book.get().setAmount(book.get().getAmount() + 1);
+        }
+        bookRepository.save(book.get());
+        return book.get().getAmount();
     }
 }

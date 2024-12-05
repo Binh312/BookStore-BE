@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.role = ?1")
     Page<User> getAllUserByRole(Pageable pageable,String role);
+
+    @Query("select u from User u where u.email like %?1% or u.fullName like %?1%")
+    Page<User> searchUser(String name, Pageable pageable);
 }

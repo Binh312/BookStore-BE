@@ -37,6 +37,12 @@ public class CategoryApi {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/search-category")
+    public ResponseEntity<?> searchCategory(@RequestParam String name, Pageable pageable){
+        Page<Category> page = categoryService.searchCategory(name,pageable);
+        return new ResponseEntity<>(page,HttpStatus.OK);
+    }
+
     @GetMapping("/get-all-category")
     public ResponseEntity<?> getAllCategory(Pageable pageable){
         Page<Category> page = categoryService.getAllCategory(pageable);

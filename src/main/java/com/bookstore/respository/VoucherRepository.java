@@ -16,6 +16,9 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     @Query("select v from Voucher v where v.title = ?1")
     Optional<Voucher> findVoucherByTitle(String title);
 
+    @Query("select v from Voucher v where v.title like %?1%")
+    Page<Voucher> searchVoucher(String title, Pageable pageable);
+
     @Query("select  v from Voucher v")
     Page<Voucher> getAllVoucher(Pageable pageable);
 

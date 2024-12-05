@@ -21,6 +21,10 @@ public class Cart {
 
     private Integer quantity;
 
+    private Integer totalPrice;
+
+    private Integer totalCartPrice;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

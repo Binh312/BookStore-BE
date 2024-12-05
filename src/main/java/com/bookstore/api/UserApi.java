@@ -66,6 +66,12 @@ public class UserApi {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/search-user")
+    public ResponseEntity<?> searchUser(@RequestParam String name, Pageable pageable) {
+        Page<User> page = userService.searchUser(name,pageable);
+        return new ResponseEntity<>(page,HttpStatus.OK);
+    }
+
     @GetMapping("/admin/check-role-admin")
     public void checkRoleAdmin(){
     }

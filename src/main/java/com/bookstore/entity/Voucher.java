@@ -24,6 +24,8 @@ public class Voucher {
 
     private Integer price;
 
+    private Integer quantity;
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime createDate;
 
